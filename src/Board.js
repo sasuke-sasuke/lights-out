@@ -45,7 +45,7 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
   function hasWon() {
     // TODO: check the board in state to determine whether the player has won.
-    return board.filter(row => row.every(cell => cell === false))
+    return board.every(row => row.every(cell => cell === false))
   }
 
   function flipCellsAround(coord) {
@@ -63,7 +63,23 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
       // TODO: Make a (deep) copy of the oldBoard
       const newBoard = JSON.parse(JSON.stringify(oldBoard));
       // TODO: in the copy, flip this cell and the cells around it
+
+      if (y === 0) flipCell(y + 1, x, newBoard);
+      if (x === 0) flipCell(y, x + 1, newBoard);
+      if (y === nrows - 1) flipCell(y - 1, x, newBoard);
+      if (x === ncols - 1) flipCell(y, x - 1, newBoard);
+      if (y !== 0 && y!== nrows - 1) {
+        flipCell(y - 1, x, newBoard);
+        flipCell(y + 1, x, newBoard);
+      }
+      if (x !== 0 && x !== ncols - 1 ) {
+        flipCell(y, x - 1, newBoard);
+        flipCell(y, x + 1, newBoard);
+      }
+
+
       flipCell(y, x, newBoard);
+        
       // TODO: return the copy
       return newBoard;
     });
@@ -73,15 +89,17 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
   // TODO
 
+
   // make table board
 
   // TODO
   return (
     <div className="Board">
+      {hasWon() ? 'You Won!' : 
       <table>
         <tbody>
           {board.map((row, y) => (
-            <tr>
+            <tr key={y}>
               {row.map((cell, x) => (
                 <Cell
                   key={`${y}-${x}`}
@@ -92,7 +110,7 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>}
     </div>
   );
 }
